@@ -36,7 +36,7 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docke
 apt update
 apt install docker-ce -y
 usermod -aG docker ${USER} 
-usermod -aG docker $user1id 
+usermod -aG docker $user1
 echo "$(date +%d-%m-%Y_%H:%M:%S) --> installed docker-cli" >> status
 
 # docker-compose 
