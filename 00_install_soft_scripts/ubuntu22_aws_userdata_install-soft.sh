@@ -23,6 +23,21 @@ systemctl enable nginx
 systemctl start nginx 
 echo "$(date +%d-%m-%Y_%H:%M:%S) --> installed maven, awscli,nginx & started nginx service. Access via port 80" >> status
 
+file=index.html
+echo "<html><head><title>index</title></head><body>" > $file 
+echo "&nbsp" >> $file
+echo "<h1> Hi! welcome everyone!</h1>" >> $file
+echo "<h2>below are host Details:-</h2>" >> $file
+echo "<p>public_ip-adress: $(curl ifconfig.me)" >> $file
+echo "&nbsp </p>" >> $file
+echo "local_ip-address: `hostname -I | awk '{print $1}'`" >> $file
+echo "</body></html>" >> $file
+cp index.html /var/www/html 
+mv /var/www/html/index.nginx*.html /var/www/html/default.html 
+systemctl reload nginx
+echo "$(date +%d-%m-%Y_%H:%M:%S) --> updated nginx index page. acess default page via <url>/default.html" >> status
+
+
 # ansible
 apt-add-repository ppa:ansible/ansible -y
 apt update -y 
@@ -132,5 +147,9 @@ chown tomcat: jenkins.war
 cp -p jenkins.war /opt/tomcat/latest/webapps/
 echo "$(date +%d-%m-%Y_%H:%M:%S) --> deployed jenkins war file as tomcat webapp. Access by <host_ip>:9080/jenkins" >> status
 
+echo " " >> status
+systemctl stop jenkins
+systemctl stop tomcat
+echo "$(date +%d-%m-%Y_%H:%M:%S) --> stopped jenkins & tomcat. if needed start service manually" >> status
 echo " " >> status
 echo "software installations done on $(date)" >> status
