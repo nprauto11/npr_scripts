@@ -25,7 +25,7 @@ file=index.html
 echo "<html><head><title>index</title></head><body>" > $file 
 echo "&nbsp" >> $file
 echo "<h1> Hi! welcome everyone!</h1>" >> $file
-echo "<h2>below are host Details:-</h2>" >> $file
+echo "<h2>below are host (master) Details:-</h2>" >> $file
 echo "<p>public_ip-adress: $(curl ifconfig.me)" >> $file
 echo "&nbsp </p>" >> $file
 echo "local_ip-address: `hostname -I | awk '{print $1}'`" >> $file
@@ -157,14 +157,19 @@ echo " " >> /tmp/utilities/status
 mkdir -p /tmp/utilities/keys
 git clone https://github.com/nprauto11/npr_ansible_practice.git /tmp/utilities/keys
 cd /tmp/utilities/keys/00_ssh_keys
-cp id_rsa id_rsa.pub ~/.ssh/
-echo "$(date +%d-%m-%Y_%H:%M:%S) --> copied ssh keys to .ssh directory of user:" $USER >> /tmp/utilities/status
+chmod 400 id_rsa 
+cp -v  id_rsa id_rsa.pub ~/.ssh/
+echo "$(date +%d-%m-%Y_%H:%M:%S) --> copied ssh keys to .ssh directory of user: $USER" >> /tmp/utilities/status
 
-cd /tmp && chown -R $user1 utilities
-su - $user1
+#cd /tmp && chown -R $user1 utilities
+#su - $user1
+#cd /tmp/utilities/keys/00_ssh_key
+#cp id_rsa id_rsa.pub ~/.ssh/
+
+chown -R $user1: /tmp/utilities/keys/00_ssh_key
 cd /tmp/utilities/keys/00_ssh_key
-cp id_rsa id_rsa.pub ~/.ssh/
-echo "$(date +%d-%m-%Y_%H:%M:%S) --> copied ssh keys to .ssh directory of user:" $USER >> /tmp/utilities/status
+cp -v  id_rsa id_rsa.pub /home/$user1/.ssh/
+echo "$(date +%d-%m-%Y_%H:%M:%S) --> copied ssh keys to .ssh directory of user: $user1" >> /tmp/utilities/status
 
 echo " " >> /tmp/utilities/status
 echo "software installations done on $(date)" >> /tmp/utilities/status
