@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 user1=ubuntu
 apt update -y
 apt install nginx -y
