@@ -35,13 +35,13 @@ git clone https://github.com/nprauto11/npr_ansible_practice.git /tmp/utilities/k
 cd /tmp/utilities/keys/00_ssh_keys
 cat id_rsa.pub >> ~/.ssh/authorized_keys
 echo " " >> /tmp/utilities/status
-echo "$(date +%d-%m-%Y_%H:%M:%S) --> updated ansible ssh public key to $USER ssh authorized_keys" >> /tmp/utilities/status
+echo "$(date +%d-%m-%Y_%H:%M:%S) --> updated ansible ssh public key to authorized_keys of user:" $USER >> /tmp/utilities/status
 
 #chown -R $user1: /tmp/utilities
 #su - $user1
 cd /tmp/utilities/keys/00_ssh_keys
 cat id_rsa.pub >> /home/$user1/.ssh/authorized_keys
-echo "$(date +%d-%m-%Y_%H:%M:%S) --> updated ansible ssh public key to $user1 ssh authorized_keys" >> /tmp/utilities/status
+echo "$(date +%d-%m-%Y_%H:%M:%S) --> updated ansible ssh public key to authorized_keys of user:" $user1 >> /tmp/utilities/status
 
 echo " " >> /tmp/utilities/status
 echo "software installations done on $(date)" >> /tmp/utilities/status

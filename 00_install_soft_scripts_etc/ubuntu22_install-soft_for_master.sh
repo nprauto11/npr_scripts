@@ -156,20 +156,21 @@ echo " " >> /tmp/utilities/status
 # configure ansible 
 mkdir -p /tmp/utilities/keys
 git clone https://github.com/nprauto11/npr_ansible_practice.git /tmp/utilities/keys
+chown -R $USER:$USER /tmp/utilities/keys
 cd /tmp/utilities/keys/00_ssh_keys
 chmod 400 id_rsa 
-cp -v  id_rsa id_rsa.pub ~/.ssh/
-echo "$(date +%d-%m-%Y_%H:%M:%S) --> copied ssh keys to .ssh directory of user: $USER" >> /tmp/utilities/status
+cp -p  id_rsa id_rsa.pub ~/.ssh/
+echo "$(date +%d-%m-%Y_%H:%M:%S) --> copied ssh keys to .ssh directory of user:" $USER >> /tmp/utilities/status
 
 #cd /tmp && chown -R $user1 utilities
 #su - $user1
 #cd /tmp/utilities/keys/00_ssh_key
 #cp id_rsa id_rsa.pub ~/.ssh/
 
-chown -R $user1: /tmp/utilities/keys/00_ssh_key
-cd /tmp/utilities/keys/00_ssh_key
-cp -v  id_rsa id_rsa.pub /home/$user1/.ssh/
-echo "$(date +%d-%m-%Y_%H:%M:%S) --> copied ssh keys to .ssh directory of user: $user1" >> /tmp/utilities/status
+chown -R $user1:$user1 /tmp/utilities/keys
+cd /tmp/utilities/keys/00_ssh_keys
+cp -p  id_rsa id_rsa.pub /home/$user1/.ssh/
+echo "$(date +%d-%m-%Y_%H:%M:%S) --> copied ssh keys to .ssh directory of user:" $user1 >> /tmp/utilities/status
 
 echo " " >> /tmp/utilities/status
 echo "software installations done on $(date)" >> /tmp/utilities/status
