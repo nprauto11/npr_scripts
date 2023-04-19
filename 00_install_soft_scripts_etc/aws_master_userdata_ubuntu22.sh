@@ -160,7 +160,7 @@ chown -R $USER:$USER /tmp/utilities/keys
 cd /tmp/utilities/keys/00_ssh_keys
 chmod 400 id_rsa 
 cp -p  id_rsa id_rsa.pub ~/.ssh/
-echo "$(date +%d-%m-%Y_%H:%M:%S) --> copied ssh keys to .ssh directory of user:" $USER >> /tmp/utilities/status
+echo "$(date +%d-%m-%Y_%H:%M:%S) --> copied ssh keys to .ssh directory of user:" ${USER} >> /tmp/utilities/status
 
 #cd /tmp && chown -R $user1 utilities
 #su - $user1
