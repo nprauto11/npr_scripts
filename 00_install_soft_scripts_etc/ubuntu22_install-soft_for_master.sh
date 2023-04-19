@@ -9,9 +9,9 @@
 ##################################################################################################
 
 user1=ubuntu
-mkdir /tmp/softwares && cd /tmp/softwares
-echo "software installations started on $(date)" > status
-echo " " >> status
+mkdir -p /tmp/utilities/softwares && cd /tmp/utilities/softwares
+echo "software installations started on $(date)" > /tmp/utilities/status
+echo " " >> /tmp/utilities/status
 
 # nginx, maven, awscli, curl
 sudo apt update -y
@@ -19,7 +19,7 @@ sudo apt install apt-transport-https ca-certificates curl software-properties-co
 sudo apt install awscli maven nginx -y
 sudo systemctl enable nginx
 sudo systemctl start nginx 
-echo "$(date +%d-%m-%Y_%H:%M:%S) --> installed maven, awscli,nginx & started nginx service. Access via port 80" >> status
+echo "$(date +%d-%m-%Y_%H:%M:%S) --> installed maven, awscli,nginx & started nginx service. Access via port 80" >> /tmp/utilities/status
 
 file=index.html
 echo "<html><head><title>index</title></head><body>" > $file 
@@ -33,14 +33,14 @@ echo "</body></html>" >> $file
 sudo cp index.html /var/www/html 
 sudo mv /var/www/html/index.nginx*.html /var/www/html/default.html 
 sudo systemctl reload nginx
-echo "$(date +%d-%m-%Y_%H:%M:%S) --> updated nginx index page. acess default page via <url>/default.html" >> status
+echo "$(date +%d-%m-%Y_%H:%M:%S) --> updated nginx index page. acess default page via <url>/default.html" >> /tmp/utilities/status
 
 
 # ansible
 sudo apt-add-repository ppa:ansible/ansible -y
 sudo apt update -y
 sudo apt install ansible -y
-echo "$(date +%d-%m-%Y_%H:%M:%S) --> installed ansible" >> status
+echo "$(date +%d-%m-%Y_%H:%M:%S) --> installed ansible" >> /tmp/utilities/status
 
 
 # docker
@@ -50,18 +50,18 @@ sudo apt update
 sudo apt install docker-ce -y
 sudo usermod -aG docker ${USER}  
 sudo usermod -aG docker $user1
-echo "$(date +%d-%m-%Y_%H:%M:%S) --> installed docker-cli" >> status
+echo "$(date +%d-%m-%Y_%H:%M:%S) --> installed docker-cli" >> /tmp/utilities/status
 
 # docker-compose 
 sudo apt install python3-pip -y
 sudo pip3 install docker-compose
-echo "$(date +%d-%m-%Y_%H:%M:%S) --> installed docker-compose" >> status
+echo "$(date +%d-%m-%Y_%H:%M:%S) --> installed docker-compose" >> /tmp/utilities/status
 
 # terraform 
 wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
 echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
 sudo apt update -y && sudo apt install terraform
-echo "$(date +%d-%m-%Y_%H:%M:%S) --> installed terraform" >> status
+echo "$(date +%d-%m-%Y_%H:%M:%S) --> installed terraform" >> /tmp/utilities/status
 
 
 # jenkins
@@ -75,7 +75,7 @@ sudo apt-get install fontconfig openjdk-11-jre -y
 sudo apt-get install jenkins -y 
 sudo systemctl enable jenkins
 sudo systemctl start jenkins
-echo "$(date +%d-%m-%Y_%H:%M:%S) --> installed jenkins & started service. Access via port 8080" >> status
+echo "$(date +%d-%m-%Y_%H:%M:%S) --> installed jenkins & started service. Access via port 8080" >> /tmp/utilities/status
 
 
 # tomcat
@@ -137,7 +137,7 @@ sudo cp tomcat.service /etc/systemd/system/
 sudo systemctl daemon-reload
 sudo systemctl enable --now tomcat
 systemctl start tomcat
-echo "$(date +%d-%m-%Y_%H:%M:%S) --> installed tomcat & started service. Access via port 9080" >> status
+echo "$(date +%d-%m-%Y_%H:%M:%S) --> installed tomcat & started service. Access via port 9080" >> /tmp/utilities/status
 
 # deploy jenkins on tomcat 
 # https://raw.githubusercontent.com/AKSarav/SampleWebApp/master/dist/SampleWebApp.war
@@ -145,16 +145,29 @@ wget https://get.jenkins.io/war-stable/2.387.2/jenkins.war
 sudo chown tomcat: jenkins.war
 sudo cp -p jenkins.war /opt/tomcat/latest/webapps/
 
-echo "$(date +%d-%m-%Y_%H:%M:%S) --> deployed jenkins war as webapp on tomcat. Access by <host_url>:9080/jenkins " >> status
+echo "$(date +%d-%m-%Y_%H:%M:%S) --> deployed jenkins war as webapp on tomcat. Access by <host_url>:9080/jenkins " >> /tmp/utilities/status
 
-echo " " >> status
+echo " " >> /tmp/utilities/status
 sudo systemctl stop jenkins
 sudo systemctl stop tomcat
-echo "$(date +%d-%m-%Y_%H:%M:%S) --> stopped jenkins & tomcat. if needed start service manually" >> status
-echo " " >> status
+echo "$(date +%d-%m-%Y_%H:%M:%S) --> stopped jenkins & tomcat. if needed start service manually" >> /tmp/utilities/status
+echo " " >> /tmp/utilities/status
 
-echo " " >> status
-echo "software installations done on $(date)" >> status
+# configure ansible 
+mkdir -p /tmp/utilities/keys
+git clone https://github.com/nprauto11/npr_ansible_practice.git /tmp/utilities/keys
+cd /tmp/utilities/keys/00_ssh_keys
+cp id_rsa id_rsa.pub ~/.ssh/
+echo "$(date +%d-%m-%Y_%H:%M:%S) --> copied ssh keys to .ssh directory of user:" $USER >> /tmp/utilities/status
+
+cd /tmp && chown -R $user1 utilities
+su - $user1
+cd /tmp/utilities/keys/00_ssh_key
+cp id_rsa id_rsa.pub ~/.ssh/
+echo "$(date +%d-%m-%Y_%H:%M:%S) --> copied ssh keys to .ssh directory of user:" $USER >> /tmp/utilities/status
+
+echo " " >> /tmp/utilities/status
+echo "software installations done on $(date)" >> /tmp/utilities/status
 
 #########################################
 # and need to do afer script execution:- 
