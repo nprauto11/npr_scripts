@@ -160,7 +160,10 @@ chown -R $USER:$USER /tmp/utilities/keys
 cd /tmp/utilities/keys/00_ssh_keys
 chmod 400 id_rsa 
 cp -p  id_rsa id_rsa.pub ~/.ssh/
-echo "$(date +%d-%m-%Y_%H:%M:%S) --> copied ssh keys to .ssh directory of user:" ${USER} >> /tmp/utilities/status
+cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+echo "$(date +%d-%m-%Y_%H:%M:%S) --> copied ssh keys & updated public key to authorized_keys of user:" ${USER} >> /tmp/utilities/status
+
+
 
 #cd /tmp && chown -R $user1 utilities
 #su - $user1
@@ -170,7 +173,8 @@ echo "$(date +%d-%m-%Y_%H:%M:%S) --> copied ssh keys to .ssh directory of user:"
 chown -R $user1:$user1 /tmp/utilities/keys
 cd /tmp/utilities/keys/00_ssh_keys
 cp -p  id_rsa id_rsa.pub /home/$user1/.ssh/
-echo "$(date +%d-%m-%Y_%H:%M:%S) --> copied ssh keys to .ssh directory of user:" $user1 >> /tmp/utilities/status
+cat /home/$user1/.ssh/id_rsa.pub >> /home/$user1/.ssh/authorized_keys
+echo "$(date +%d-%m-%Y_%H:%M:%S) --> copied ssh keys & updated public key to authorized_keys of user:" $user1 >> /tmp/utilities/status
 
 echo " " >> /tmp/utilities/status
 echo "software installations done on $(date)" >> /tmp/utilities/status
