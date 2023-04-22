@@ -16,36 +16,37 @@
 mkdir -p /tmp/utilities
 wget https://raw.githubusercontent.com/nprauto11/npr_scripts/main/00_install_soft_scripts_etc/aws_userdata_common/aws_ubuntu22_install-all_01.sh -P /tmp/utilities
 chmod 755 /tmp/utilities/aws_ubuntu22_install-all_01.sh
-/bin/bash /tmp/utilities/aws_ubuntu22_install-all_01.sh
+sh /tmp/utilities/aws_ubuntu22_install-all_01.sh
 
 
 echo " " >> /tmp/utilities/status
+echo " " >> /tmp/utilities/status
 echo "########### kubernet cluster installation etc ###########" >> /tmp/utilities/status
+echo " " >> /tmp/utilities/status
 echo "kubernetes basic tools installation started at $(date)" >> /tmp/utilities/status
 echo " " >> /tmp/utilities/status
 
 # kubeadm cluster (Bettter launch t2.medium/t3.medium of 3 nodes i.e 1-master, 2-nodes)
 #Software installation: Dokcker
 wget https://raw.githubusercontent.com/nprauto11/npr_scripts/main/00_install_soft_scripts_etc/kubernetes_etc/installDocker.sh -P /tmp/utilities
-bash /tmp/utilities/installDocker.sh
+chmod 755 /tmp/utilities/installDocker.sh
+sh /tmp/utilities/installDocker.sh
 echo "$(date +%d-%m-%Y_%H:%M:%S) --> installed Docker" >> /tmp/utilities/status
-echo " " >> /tmp/utilities/status
 
 #Software installation: CRI-Dockerd
 wget https://raw.githubusercontent.com/nprauto11/npr_scripts/main/00_install_soft_scripts_etc/kubernetes_etc/installCRIDockerd.sh -P /tmp/utilities
-chmod 755 /tmp/utilities/installDocker.sh
-/bin/bash /tmp/utilities/installDocker.sh
-echo "$(date +%d-%m-%Y_%H:%M:%S) --> installed CRI-Dockerd (adapter to control Docker via the Kubernetes Container Runtime Interface" >> /tmp/utilities/status
-echo " " >> /tmp/utilities/status
+chmod 755 /tmp/utilities/installCRIDockerd.sh
+sh /tmp/utilities/installCRIDockerd.sh
+echo "$(date +%d-%m-%Y_%H:%M:%S) --> installed CRI-Dockerd (adapter to control Docker via the Kubernetes Container Runtime Interface)" >> /tmp/utilities/status
 
 
 #Software installations: kubeadm, kubelet, kubectl
 wget https://raw.githubusercontent.com/nprauto11/npr_scripts/main/00_install_soft_scripts_etc/kubernetes_etc/installK8S.sh -P /tmp/utilities
 chmod 755 /tmp/utilities/installK8S.sh
-/bin/bash  /tmp/utilities/installK8S.sh
+sh /tmp/utilities/installK8S.sh
 echo "$(date +%d-%m-%Y_%H:%M:%S) --> installed K8s -- kubeadm, kubelet, kubectl" >> /tmp/utilities/status
 echo " " >> /tmp/utilities/status
-echo "kubernetes basic tools installation done on $(date)" >> /tmp/utilities/status
+echo "## kubernetes basic tools installation done on $(date) ##" >> /tmp/utilities/status
 
 echo " " >> /tmp/utilities/status
 echo " " >> /tmp/utilities/status
@@ -72,7 +73,7 @@ echo " " >> /tmp/utilities/status
 echo " " >> /tmp/utilities/status
 
 
-echo "########### execute manually on Master Node like below: ###########" >> /tmp/utilities/status
+echo "########### RUN manually on Master Node with below steps:- ###########" >> /tmp/utilities/status
 echo " " >> /tmp/utilities/status
 wget https://raw.githubusercontent.com/nprauto11/npr_scripts/main/00_install_soft_scripts_etc/kubernetes_etc/kubeadm_init_master.sh -P /tmp/utilities
 chmod 755 /tmp/utilities/kubeadm_init_master.sh

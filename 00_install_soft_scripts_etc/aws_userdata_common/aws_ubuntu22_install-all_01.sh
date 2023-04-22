@@ -12,7 +12,8 @@
 
 user1=ubuntu
 mkdir -p /tmp/utilities/softwares && cd /tmp/utilities/softwares
-echo "software installations started on $(date)" > /tmp/utilities/status
+echo " " > /tmp/utilities/status
+echo "software installations started on $(date)" >> /tmp/utilities/status
 echo " " >> /tmp/utilities/status
 
 # adding repos (ansible, docker, terraform, jenkins)
