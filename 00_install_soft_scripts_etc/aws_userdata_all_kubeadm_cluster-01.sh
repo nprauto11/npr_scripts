@@ -1,6 +1,16 @@
 #!/bin/bash
 
-# Log: /tmp/utilities/status 
+##################################################################################################
+# Scrit_Name: aws_userdata_all_kubeadm_cluster-01.sh                                             # 
+# Maintainer: nprauto11                                                                          #
+# Description: installing on ubuntu 22.04-->  jenkins, tomcat, nginx, maven, awscli, docker-cli, #
+#              docker-compose, terraform                                                         #
+#              and kubeadm cluster (docker engine,cri-dockerd, kubeadm, kubelet, kubectl         #
+#              ** This is verymuch useful script for AWS ec2 userdata option on AWS ec2 spin-up  #         
+# version: v1                                                                                    #  
+# Log: /tmp/utilities/status                                                                     #
+##################################################################################################
+
 
 #Software installations: nginx,ansible,terraform, docker, docker-compose,tomcat,jenkins
 mkdir -p /tmp/utilities
