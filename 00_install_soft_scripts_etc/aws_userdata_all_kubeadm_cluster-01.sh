@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Log: /tmp/utilities/status 
+
+#Software installations: nginx,ansible,terraform, docker, docker-compose,tomcat,jenkins
 mkdir -p /tmp/utilities
 wget https://raw.githubusercontent.com/nprauto11/npr_scripts/main/00_install_soft_scripts_etc/aws_userdata_common/aws_ubuntu22_install-all_01.sh /tmp/utilities
 bash /tmp/utilities/aws_ubuntu22_install-all_01.sh
@@ -10,17 +13,21 @@ echo "########### kubernet cluster installation etc " >> /tmp/utilities/status
 echo "kubernetes basic tools installation started at $(date)" >> /tmp/utilities/status
 echo " " >> /tmp/utilities/status
 
+# kubeadm cluster (Bettter launch t2.medium/t3.medium of 3 nodes i.e 1-master, 2-nodes)
+#Software installation: Dokcker
 wget https://raw.githubusercontent.com/nprauto11/npr_scripts/main/00_install_soft_scripts_etc/kubernetes_etc/installDocker.sh /tmp/utilities
 bash /tmp/utilities/installDocker.sh
 echo "$(date +%d-%m-%Y_%H:%M:%S) --> installed Docker" >> /tmp/utilities/status
 echo " " >> /tmp/utilities/status
 
+#Software installation: CRI-Dockerd
 wget https://raw.githubusercontent.com/nprauto11/npr_scripts/main/00_install_soft_scripts_etc/kubernetes_etc/installCRIDockerd.sh /tmp/utilities
 bash /tmp/utilities/installDocker.sh
 echo "$(date +%d-%m-%Y_%H:%M:%S) --> installed CRI-Dockerd (adapter to control Docker via the Kubernetes Container Runtime Interface" >> /tmp/utilities/status
 echo " " >> /tmp/utilities/status
 
 
+#Software installations: kubeadm, kubelet, kubectl
 wget https://raw.githubusercontent.com/nprauto11/npr_scripts/main/00_install_soft_scripts_etc/kubernetes_etc/installK8S.sh /tmp/utilities
 bash /tmp/utilities/installK8S.sh
 echo "$(date +%d-%m-%Y_%H:%M:%S) --> installed K8s -- kubeadm, kubelet, kubectl" >> /tmp/utilities/status
