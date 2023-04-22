@@ -18,66 +18,28 @@ wget https://raw.githubusercontent.com/nprauto11/npr_scripts/main/00_install_sof
 chmod 755 /tmp/utilities/aws_ubuntu22_install-all_01.sh
 bash /tmp/utilities/aws_ubuntu22_install-all_01.sh
 
-
-echo " " >> /tmp/utilities/status
-echo " " >> /tmp/utilities/status
-echo "########### kubernet cluster installation etc ###########" >> /tmp/utilities/status
-echo " " >> /tmp/utilities/status
-echo "kubernetes basic tools installation started at $(date)" >> /tmp/utilities/status
-echo " " >> /tmp/utilities/status
-
-# kubeadm cluster (Bettter launch t2.medium/t3.medium of 3 nodes i.e 1-master, 2-nodes)
-#Software installation: Dokcker
-wget https://raw.githubusercontent.com/nprauto11/npr_scripts/main/00_install_soft_scripts_etc/kubernetes_etc/installDocker.sh -P /tmp/utilities
-chmod 755 /tmp/utilities/installDocker.sh
-sh /tmp/utilities/installDocker.sh
-echo "$(date +%d-%m-%Y_%H:%M:%S) --> installed Docker" >> /tmp/utilities/status
-
-#Software installation: CRI-Dockerd
-wget https://raw.githubusercontent.com/nprauto11/npr_scripts/main/00_install_soft_scripts_etc/kubernetes_etc/installCRIDockerd.sh -P /tmp/utilities
-chmod 755 /tmp/utilities/installCRIDockerd.sh
-bash /tmp/utilities/installCRIDockerd.sh
-echo "$(date +%d-%m-%Y_%H:%M:%S) --> installed CRI-Dockerd (adapter to control Docker via the Kubernetes Container Runtime Interface)" >> /tmp/utilities/status
+# kubeadm cluster tools installtion
+# Bettter launch t2.medium/t3.medium ec2-instances  i.e 1-master, 2-nodes
+mkdir -p /tmp/utilities
+wget https://raw.githubusercontent.com/nprauto11/npr_scripts/main/00_install_soft_scripts_etc/kubernetes_etc/aws_ubuntu22_kubeadm_tools_install.sh -P /tmp/utilities
+chmod 755 /tmp/utilities/aws_ubuntu22_kubeadm_tools_install.sh
+bash /tmp/utilities/aws_ubuntu22_kubeadm_tools_install.sh
 
 
-#Software installations: kubeadm, kubelet, kubectl
-wget https://raw.githubusercontent.com/nprauto11/npr_scripts/main/00_install_soft_scripts_etc/kubernetes_etc/installK8S.sh -P /tmp/utilities
-chmod 755 /tmp/utilities/installK8S.sh
-bash /tmp/utilities/installK8S.sh
-echo "$(date +%d-%m-%Y_%H:%M:%S) --> installed K8s -- kubeadm, kubelet, kubectl" >> /tmp/utilities/status
-echo " " >> /tmp/utilities/status
-echo "## kubernetes basic tools installation done on $(date) ##" >> /tmp/utilities/status
 
+echo "########### Step-1: RUN manually on Master Node with below steps:- ###########" >> /tmp/utilities/status
 echo " " >> /tmp/utilities/status
-echo " " >> /tmp/utilities/status
+echo 'change the hostname of the master-node:' >> /tmp/utilities/status
+echo '$ hostname master' >> /tmp/utilities/status
+echo '$ echo "master" > /etc/hostname' >> /tmp/utilities/status    
+echo '$ echo "127.0.1.1    master" >> /etc/hosts' >> /tmp/utilities/status
+echo 'Re-connect sesion (putty) for hostname reflection' >> /tmp/utilities/status
 
-echo "$ docker -v " >> /tmp/utilities/status
-docker -v >> /tmp/utilities/status
-echo " " >> /tmp/utilities/status
-
-echo "$ cri-dockerd --version " >> /tmp/utilities/status
-cri-dockerd --version >> /tmp/utilities/status
-echo " " >> /tmp/utilities/status
-
-echo "$ kubeadm version -o short " >> /tmp/utilities/status
-kubeadm version -o short >> /tmp/utilities/status
-echo " " >> /tmp/utilities/status
-   
-echo "$ kubelet --version " >> /tmp/utilities/status
-kubelet --version >> /tmp/utilities/status
-echo " " >> /tmp/utilities/status
-   
-echo "$ kubectl version --short --client" >> /tmp/utilities/status
-kubectl version --short --client >> /tmp/utilities/status
-echo " " >> /tmp/utilities/status   
-echo " " >> /tmp/utilities/status
-
-
-echo "########### RUN manually on Master Node with below steps:- ###########" >> /tmp/utilities/status
 echo " " >> /tmp/utilities/status
 wget https://raw.githubusercontent.com/nprauto11/npr_scripts/main/00_install_soft_scripts_etc/kubernetes_etc/kubeadm_init_master.sh -P /tmp/utilities
 chmod 755 /tmp/utilities/kubeadm_init_master.sh
 
+echo "Execute below command to initialise kubeadm in Master-Node: " >> /tmp/utilities/status
 echo "$ sudo bash /tmp/utilities/kubeadm_init_master.sh " >> /tmp/utilities/status
 echo " " >> /tmp/utilities/status
 
@@ -85,7 +47,7 @@ echo "To verify node status hit below command. wait for sometime to get ready:" 
 echo "$ kubectl get nodes" >> /tmp/utilities/status
 
 echo " " >> /tmp/utilities/status
-echo "Run Below to get join token for adding node to cluster:" >> /tmp/utilities/status
+echo "Run Below command to get join token for adding node to cluster:" >> /tmp/utilities/status
 echo "$ kubeadm token create --print-join-command "  >> /tmp/utilities/status
 
 echo " " >> /tmp/utilities/status
@@ -98,6 +60,52 @@ echo "$ kubeadm join 172.31.7.65:6443 --cri-socket unix:///var/run/cri-dockerd.s
 echo " " >> /tmp/utilities/status
 echo "enjoy with kubernetes cluster! " >> /tmp/utilities/status
 echo " " >> /tmp/utilities/status
+echo " " >> /tmp/utilities/status
+
+echo "########### Step-2: RUN manually on worker-1 node with below steps:- ###########" >> /tmp/utilities/status
+echo " " >> /tmp/utilities/status
+echo 'change the hostname of the worker-1 node:' >> /tmp/utilities/status
+echo '$ hostname worker-1' >> /tmp/utilities/status
+echo '$ echo "worker-1" > /etc/hostname' >> /tmp/utilities/status    
+echo '$ echo "127.0.1.1    worker-1" >> /etc/hosts' >> /tmp/utilities/status
+echo 'Re-connect sesion (putty) for hostname reflection' >> /tmp/utilities/status
+
+echo " " >> /tmp/utilities/status
+echo "How to join node to Cluster:" >> /tmp/utilities/status
+echo "Run token get from Master node with adding --cri-socket unix:///var/run/cri-dockerd.sock" >> /tmp/utilities/status
+echo " " >> /tmp/utilities/status
+echo "Ex:- "  >> /tmp/utilities/status
+echo "$ kubeadm join 172.31.7.65:6443 --token 3p8bzg.sulks92b5xvrdwm4 --discovery-token-ca-cert-hash sha256:9de17e4f40a3d248ddaea0c67c73ae2bf0c0ee36e6f106592c83536e680b71f1 --cri-socket unix:///var/run/cri-dockerd.sock "  >> /tmp/utilities/status
+echo " " >> /tmp/utilities/status
+echo " " >> /tmp/utilities/status
+
+echo "########### Step-3: RUN manually on worker-2 node with below steps:- ###########" >> /tmp/utilities/status
+echo " " >> /tmp/utilities/status
+echo 'change the hostname of the worker-2 node:' >> /tmp/utilities/status
+echo '$ hostname worker-2' >> /tmp/utilities/status
+echo '$ echo "worker-2" > /etc/hostname' >> /tmp/utilities/status    
+echo '$ echo "127.0.1.1    worker-2" >> /etc/hosts' >> /tmp/utilities/status
+echo 'Re-connect sesion (putty) for hostname reflection' >> /tmp/utilities/status
+
+echo " " >> /tmp/utilities/status
+echo "How to join node to Cluster:" >> /tmp/utilities/status
+echo "Run token get from Master node with adding --cri-socket unix:///var/run/cri-dockerd.sock" >> /tmp/utilities/status
+echo " " >> /tmp/utilities/status
+echo "Ex:- "  >> /tmp/utilities/status
+echo "$ kubeadm join 172.31.7.65:6443 --token 3p8bzg.sulks92b5xvrdwm4 --discovery-token-ca-cert-hash sha256:9de17e4f40a3d248ddaea0c67c73ae2bf0c0ee36e6f106592c83536e680b71f1 --cri-socket unix:///var/run/cri-dockerd.sock "  >> /tmp/utilities/status
+echo " " >> /tmp/utilities/status
+echo " " >> /tmp/utilities/status
+
+echo "============================================= " >> /tmp/utilities/status
+echo " " >> /tmp/utilities/status
+echo "For kubeadm cluster configuration, go through step-1 (or) step-2:- " >> /tmp/utilities/status
+echo " " >> /tmp/utilities/status
+echo "Step-1 --> browse the below link & execute the commands: " >> /tmp/utilities/status
+echo "Link:- https://raw.githubusercontent.com/nprauto11/npr_scripts/main/00_install_soft_scripts_etc/kubernetes_etc/kubeadm-cluster-install-configure_steps.txt " >> /tmp/utilities/status
+
+wget https://raw.githubusercontent.com/nprauto11/npr_scripts/main/00_install_soft_scripts_etc/kubernetes_etc/kubeadm-cluster-install-configure_steps.txt -P /tmp/utilities
+echo " " >> /tmp/utilities/status
+echo "Step-2 --> read the steps file & execute the commands: " >> /tmp/utilities/status
+echo " cat /tmp/utilities/kubeadm-cluster-install-configure_steps.txt" >> /tmp/utilities/status
+echo " " >> /tmp/utilities/status
 echo "########################################## " >> /tmp/utilities/status
-
-

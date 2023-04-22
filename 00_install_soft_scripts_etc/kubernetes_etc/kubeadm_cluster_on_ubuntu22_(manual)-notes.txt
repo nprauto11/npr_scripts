@@ -1,7 +1,7 @@
 install kubeadm cluster on ubuntu22 host:-
 #######################################
 
-Step1: On Master Node Only
+Step1: On Master Node Only (this covers via automated script on all nodes)
 ======
 
 ## Install Docker
@@ -33,8 +33,8 @@ sudo bash /tmp/installK8S.sh
     kubeadm version -o short
     kubelet --version
     kubectl version --short --client
-
-
+	
+	   
 ## Initialize kubernetes Master Node
    ---------------------------------
  
@@ -55,6 +55,7 @@ sudo bash /tmp/installK8S.sh
 
 
    # Validate:  kubectl get nodes
+
 
 
 
