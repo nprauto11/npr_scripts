@@ -1,19 +1,18 @@
 install kubeadm cluster on ubuntu22 host:-
 #######################################
 
-
 Step1: On Master Node Only
 ======
 
 ## Install Docker
-sudo wget https://raw.githubusercontent.com/akshu20791/masterlabs/main/installDocker.sh -P /tmp
+sudo wget https://raw.githubusercontent.com/nprauto11/npr_scripts/main/00_install_soft_scripts_etc/kubernetes_etc/installDocker.sh -P /tmp
 sudo chmod 755 /tmp/installDocker.sh
 sudo bash /tmp/installDocker.sh
 sudo systemctl restart docker.service
 
 
 ## Install CRI-Docker
-sudo wget https://raw.githubusercontent.com/akshu20791/masterlabs/main/installCRIDockerd.sh -P /tmp
+sudo wget https://raw.githubusercontent.com/nprauto11/npr_scripts/main/00_install_soft_scripts_etc/kubernetes_etc/installCRIDockerd.sh -P /tmp
 sudo chmod 755 /tmp/installCRIDockerd.sh
 sudo bash /tmp/installCRIDockerd.sh
 sudo systemctl restart cri-docker.service
@@ -21,8 +20,7 @@ sudo systemctl restart cri-docker.service
 
 ## Install kubeadm,kubelet,kubectl
 
-
-sudo wget https://raw.githubusercontent.com/akshu20791/masterlabs/main/installK8S.sh -P /tmp
+sudo wget https://raw.githubusercontent.com/nprauto11/npr_scripts/main/00_install_soft_scripts_etc/kubernetes_etc/installK8S.sh -P /tmp
 sudo chmod 755 /tmp/installK8S.sh
 sudo bash /tmp/installK8S.sh
 
@@ -38,6 +36,7 @@ sudo bash /tmp/installK8S.sh
 
 
 ## Initialize kubernetes Master Node
+   ---------------------------------
  
    sudo kubeadm init --cri-socket unix:///var/run/cri-dockerd.sock --ignore-preflight-errors=all
 
