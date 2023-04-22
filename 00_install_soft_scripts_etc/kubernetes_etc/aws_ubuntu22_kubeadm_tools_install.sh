@@ -69,9 +69,10 @@ echo " " >> /tmp/utilities/status
 echo " " >> /tmp/utilities/status
 
 # download 
-wget https://raw.githubusercontent.com/nprauto11/npr_scripts/main/00_install_soft_scripts_etc/kubernetes_etc/aws_ubuntu22_kubeadm_tools_install.sh -P /tmp/utilities
-chmod 755 /tmp/utilities/aws_ubuntu22_kubeadm_tools_install.sh
-# bash /tmp/utilities/aws_ubuntu22_kubeadm_tools_install.sh
+wget https://raw.githubusercontent.com/nprauto11/npr_scripts/main/00_install_soft_scripts_etc/kubernetes_etc/kubeadm_init_master.sh -P /tmp/utilities
+chmod 755 /tmp/utilities/kubeadm_init_master.sh
+# bash /tmp/utilities/kubeadm_init_master.sh
+
 
 # For further steps browse: Link:- https://raw.githubusercontent.com/nprauto11/npr_scripts/main/00_install_soft_scripts_etc/kubernetes_etc/kubeadm-cluster-install-configure_steps.txt 
 # steps
