@@ -1,0 +1,265 @@
+install kubeadm cluster on ubuntu22 host:-
+#######################################
+
+
+Step1: On Master Node Only
+======
+
+## Install Docker
+sudo wget https://raw.githubusercontent.com/akshu20791/masterlabs/main/installDocker.sh -P /tmp
+sudo chmod 755 /tmp/installDocker.sh
+sudo bash /tmp/installDocker.sh
+sudo systemctl restart docker.service
+
+
+## Install CRI-Docker
+sudo wget https://raw.githubusercontent.com/akshu20791/masterlabs/main/installCRIDockerd.sh -P /tmp
+sudo chmod 755 /tmp/installCRIDockerd.sh
+sudo bash /tmp/installCRIDockerd.sh
+sudo systemctl restart cri-docker.service
+
+
+## Install kubeadm,kubelet,kubectl
+
+
+sudo wget https://raw.githubusercontent.com/akshu20791/masterlabs/main/installK8S.sh -P /tmp
+sudo chmod 755 /tmp/installK8S.sh
+sudo bash /tmp/installK8S.sh
+
+
+# Validate (optional)
+
+
+    docker -v
+    cri-dockerd --version
+    kubeadm version -o short
+    kubelet --version
+    kubectl version --short --client
+
+
+## Initialize kubernetes Master Node
+ 
+   sudo kubeadm init --cri-socket unix:///var/run/cri-dockerd.sock --ignore-preflight-errors=all
+
+
+   sudo mkdir -p $HOME/.kube
+   sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+   sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+
+   ## install networking driver -- Weave/flannel/canal/calico etc... 
+
+
+   ## below installs calico networking driver 
+    
+   kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.24.1/manifests/calico.yaml
+
+
+   # Validate:  kubectl get nodes
+
+
+
+Step2: On All Worker Nodes
+=====
+
+## Install Docker
+
+
+sudo wget https://raw.githubusercontent.com/akshu20791/masterlabs/main/installDocker.sh -P /tmp
+sudo chmod 755 /tmp/installDocker.sh
+sudo bash /tmp/installDocker.sh
+sudo systemctl restart docker.service
+
+
+## Install CRI-Docker
+
+
+sudo wget https://raw.githubusercontent.com/akshu20791/masterlabs/main/installCRIDockerd.sh -P /tmp
+
+
+sudo chmod 755 /tmp/installCRIDockerd.sh
+sudo bash /tmp/installCRIDockerd.sh
+sudo systemctl restart cri-docker.service
+
+
+## Install kubeadm,kubelet,kubectl
+
+
+sudo wget https://raw.githubusercontent.com/akshu20791/masterlabs/main/installK8S.sh -P /tmp
+
+
+sudo chmod 755 /tmp/installK8S.sh
+sudo bash /tmp/installK8S.sh
+      sudo su
+
+
+# Validate 
+
+
+   docker -v
+   cri-dockerd --version
+   kubeadm version -o short
+   kubelet --version
+   kubectl version --short --client
+   
+   
+step3: Run Below on Master Node to get join token 
+=====
+
+kubeadm token create --print-join-command 
+
+
+    copy the kubeadm join token from master & ensure to add --cri-socket unix:///var/run/cri-dockerd.sock as below & then run on worker nodes
+
+
+    Ex: kubeadm join 10.128.15.231:6443 --cri-socket unix:///var/run/cri-dockerd.sock --token mks3y2.v03tyyru0gy12mbt \
+           --discovery-token-ca-cert-hash sha256:3de23d42c7002be0893339fbe558ee75e14399e11f22e3f0b34351077b7c4b56
+
+==>
+
+EX:-
+===
+on Master:
+------
+root@ip-172-31-7-65:~# kubeadm token create --print-join-command
+kubeadm join 172.31.7.65:6443 --token 3p8bzg.sulks92b5xvrdwm4 --discovery-token-ca-cert-hash sha256:9de17e4f40a3d248ddaea0c67c73ae2bf0c0ee36e6f106592c83536e680b71f1
+
+so need to modify the above one as below to execute on nodes:-
+---------------
+kubeadm join 172.31.7.65:6443 --cri-socket unix:///var/run/cri-dockerd.sock --token 3p8bzg.sulks92b5xvrdwm4 --discovery-token-ca-cert-hash sha256:9de17e4f40a3d248ddaea0c67c73ae2bf0c0ee36e6f106592c83536e680b71f1
+
+
+
+after joining nodes:-
+==============
+$ kubectl get nodes
+NAME              STATUS   ROLES           AGE   VERSION
+ip-172-31-0-123   Ready    <none>          36m   v1.27.1
+ip-172-31-3-210   Ready    <none>          36m   v1.27.1
+ip-172-31-7-65    Ready    control-plane   48m   v1.27.1
+
+
+
+###################################
+
+example-1: to spinup pod
+----------
+$ vi singleconpod.yml 
+
+kind: Pod                              
+apiVersion: v1                     
+metadata:                           
+  name: testpod
+  annotations:
+   description: Our first testing pod                  
+spec:                                    
+  containers:                      
+    - name: c00                     
+      image: ubuntu              
+      command: ["/bin/bash", "-c", "while true; do echo Test Message; sleep 5 ; done"]
+  restartPolicy: Never         # Defaults to Always
+
+
+$ kubectl apply -f singleconpod.yml 
+pod/testpod created
+
+$ kubectl get pods -o wide
+
+$ kubectl describe pod testpod    # for pod description
+
+$ kubectl logs -f testpod        # to get pod logs 
+
+$ kubectl logs -f testpod -c c00  # to see logs of container inside pod  
+
+$ kubectl exec testpod -it -c c00 -- /bin/bash  # to enter into container 
+
+
+
+
+
+example-2: to spingup multi pod 
+----------
+
+$ vi multiconpod.yml
+kind: Pod
+apiVersion: v1
+metadata:
+  name: testpod2
+spec:
+  containers:
+    - name: c00
+      image: ubuntu
+      command: ["/bin/bash", "-c", "while true; do echo My first message; sleep 5 ; done"]
+    - name: c01
+      image: ubuntu
+      command: ["/bin/bash", "-c", "while true; do echo Hello-Devops; sleep 5 ; done"]
+
+
+$ kubectl apply -f multiconpod.yml
+pod/testpod2 created
+
+
+$ kubectl get pods
+NAME       READY   STATUS    RESTARTS   AGE
+testpod    1/1     Running   0          24m
+testpod2   2/2     Running   0          18s
+
+$ kubectl get pods -o wide
+NAME       READY   STATUS    RESTARTS   AGE   IP               NODE              NOMINATED NODE   READINESS GATES
+testpod    1/1     Running   0          24m   192.168.89.193   ip-172-31-0-123   <none>           <none>
+testpod2   2/2     Running   0          35s   192.168.226.1    ip-172-31-3-210   <none>           <none>
+
+$ kubectl describe pod testpod2
+
+$ kubectl get pods testpod2 -o jsonpath='{.spec.containers[*].name}'   #list containers in pod)
+c00 c01
+
+$ kubectl logs -f testpod2 c00   #to see what is running in container
+My first message
+My first message
+My first message
+
+
+$ kubectl logs -f testpod2 c01
+Hello-Devops
+Hello-Devops
+Hello-Devops
+
+
+$ kubectl exec testpod2 -it -c c00 -- /bin/bash    #to enter inside the container
+root@testpod2:/# exit 
+root@ip-172-31-7-65:~#
+
+
+$ kubectl get nodes
+NAME              STATUS   ROLES           AGE   VERSION
+ip-172-31-0-123   Ready    <none>          36m   v1.27.1
+ip-172-31-3-210   Ready    <none>          36m   v1.27.1
+ip-172-31-7-65    Ready    control-plane   48m   v1.27.1
+
+
+$ kubectl get nodes -o wide
+NAME              STATUS   ROLES           AGE   VERSION   INTERNAL-IP    EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION    CONTAINER-RUNTIME
+ip-172-31-0-123   Ready    <none>          36m   v1.27.1   172.31.0.123   <none>        Ubuntu 22.04.2 LTS   5.15.0-1031-aws   docker://23.0.4
+ip-172-31-3-210   Ready    <none>          36m   v1.27.1   172.31.3.210   <none>        Ubuntu 22.04.2 LTS   5.15.0-1031-aws   docker://23.0.4
+ip-172-31-7-65    Ready    control-plane   48m   v1.27.1   172.31.7.65    <none>        Ubuntu 22.04.2 LTS   5.15.0-1031-aws   docker://23.0.4
+
+
+$ kubectl get pods
+NAME       READY   STATUS    RESTARTS   AGE
+testpod    1/1     Running   0          24m
+testpod2   2/2     Running   0          18s
+
+$ kubectl delete pod testpod    #to delete pods 
+pod "testpod" deleted
+
+$ kubectl get pods
+NAME       READY   STATUS    RESTARTS   AGE
+testpod2   2/2     Running   0          6m54s
+
+$ kubectl delete pod testpod2
+pod "testpod2" deleted
+
+$ kubectl get pods
+No resources found in default namespace.
+
