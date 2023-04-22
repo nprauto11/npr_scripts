@@ -28,7 +28,7 @@ step-1: Manual steps
   $ sudo su -
   $ hostname master
   $ echo "master" > /etc/hostname    
-  $ echo "127.0.1.1    master" >> /etc/hosts' 
+  $ echo "127.0.1.1    master" >> /etc/hosts
   
   
   Worker-1:
@@ -36,7 +36,7 @@ step-1: Manual steps
   $ sudo su -
   $ hostname worker-1
   $ echo "worker-1" > /etc/hostname    
-  $ echo "127.0.1.1    worker-1" >> /etc/hosts' 
+  $ echo "127.0.1.1    worker-1" >> /etc/hosts
 
 
   Worker-2:
@@ -44,7 +44,7 @@ step-1: Manual steps
   $ sudo su -
   $ hostname worker-2
   $ echo "worker-2" > /etc/hostname    
-  $ echo "127.0.1.1    worker-2" >> /etc/hosts' 
+  $ echo "127.0.1.1    worker-2" >> /etc/hosts
   
   
 
@@ -53,22 +53,23 @@ step-1: Manual steps
 
   Master:  
   ------
-  # (1) verify file exists /tmp/utilities/aws_ubuntu22_kubeadm_tools_install.sh. if not download it
-  $ sudo su -
-  $ ls -ltrh /tmp/utilities/aws_ubuntu22_kubeadm_tools_install.sh
-  $ bash /tmp/utilities/aws_ubuntu22_kubeadm_tools_install.sh
+  # (1) execute kubeadm initialisation script on Master node. Follow step(a) or step (b) -->
+    # (a) verify file exists /tmp/utilities/kubeadm_init_master.sh 
+    $ sudo su -
+    $ ls -ltrh /tmp/utilities/kubeadm_init_master.sh 
+    $ bash /tmp/utilities/kubeadm_init_master.sh 
   
-  # if script didnt found, download like below & execute it 
-  $ mkdir -p /tmp/utilities
-  $ wget https://raw.githubusercontent.com/nprauto11/npr_scripts/main/00_install_soft_scripts_etc/kubernetes_etc/aws_ubuntu22_kubeadm_tools_install.sh -P /tmp/utilities
-  $ chmod 755 /tmp/utilities/aws_ubuntu22_kubeadm_tools_install.sh
-  $ bash /tmp/utilities/aws_ubuntu22_kubeadm_tools_install.sh
+    # (b) if script didnt found, download like below & execute it 
+    $ mkdir -p /tmp/utilities
+    $ wget https://raw.githubusercontent.com/nprauto11/npr_scripts/main/00_install_soft_scripts_etc/kubernetes_etc/kubeadm_init_master.sh -P /tmp/utilities
+    $ chmod 755 /tmp/utilities/kubeadm_init_master.sh
+    $ bash /tmp/utilities/kubeadm_init_master.sh
   
-  # (2) execute remaining commands
+  # (2) execute below command to get token (on master node) -->
   $ kubeadm token create --print-join-command
   
-  # copy the above command resultant kubeadm join token from master & execute on worker nodes
-   (note: at the end add for the resultant as  --cri-socket unix:///var/run/cri-dockerd.sock )
+  # copy the above command resultant on notepad and add --cri-socket atr the end and execute on worker nodes
+   (note: at the end add like:-  --cri-socket unix:///var/run/cri-dockerd.sock )
   	
 	
   worker-1:

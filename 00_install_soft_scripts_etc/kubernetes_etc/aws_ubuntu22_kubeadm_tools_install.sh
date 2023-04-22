@@ -1,5 +1,13 @@
 #!/bin/bash
 
+####################################################################################################
+# Scrit_Name: aws_ubuntu22_kubeadm_tools_install.sh                                                # 
+# Maintainer: nprauto11                                                                            #
+# Description: installing on ubuntu 22.04-->  docker engine,cri-dockerd, kubeadm, kubelet, kubectl #
+# version: v1                                                                                      #  
+# Log: /tmp/utilities/status                                                                       #
+####################################################################################################
+
 # kubeadm cluster tools  installtion(Bettter launch t2.medium/t3.medium of 3 nodes i.e 1-master, 2-nodes)
 mkdir -p /tmp/utilities
 echo " " >> /tmp/utilities/status
