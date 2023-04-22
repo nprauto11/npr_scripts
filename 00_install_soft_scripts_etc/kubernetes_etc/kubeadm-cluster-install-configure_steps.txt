@@ -41,13 +41,13 @@ step-1: Manual steps
   Worker-1:
   --------
   $ sudo su -
-  $ hsnm=worker1 ; hostname $hsnm && echo $hsnm > /etc/hostname && echo "127.0.1.1    $hsnm" >> /etc/hosts
+  $ hsnm=worker-1 ; hostname $hsnm && echo $hsnm > /etc/hostname && echo "127.0.1.1    $hsnm" >> /etc/hosts
 
 
   Worker-2:
   --------
   $ sudo su -
-  $ hsnm=worker2 ; hostname $hsnm && echo $hsnm > /etc/hostname && echo "127.0.1.1    $hsnm" >> /etc/hosts
+  $ hsnm=worker-2 ; hostname $hsnm && echo $hsnm > /etc/hostname && echo "127.0.1.1    $hsnm" >> /etc/hosts
   
   # now re-login putty session for all nodes to reflect hostname 
   
