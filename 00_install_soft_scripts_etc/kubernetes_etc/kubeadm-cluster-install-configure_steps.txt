@@ -15,8 +15,17 @@ step-0: verify the pre-requisite software packages (if installed, execute from s
   $ kubelet --version
   $ kubectl version --short --client
   
-# if above tools installed skip below steps and go to step-1 
+# if above tools are installed skip below steps and go to step-1 
   # kubeadm cluster tools installtion
+    $ mkdir -p /tmp/utilities
+    $ wget https://raw.githubusercontent.com/nprauto11/npr_scripts/main/00_install_soft_scripts_etc/kubernetes_etc/aws_ubuntu22_kubeadm_tools_install.sh -P /tmp/utilities
+    $ chmod 755 /tmp/utilities/aws_ubuntu22_kubeadm_tools_install.sh
+    $ bash /tmp/utilities/aws_ubuntu22_kubeadm_tools_install.sh
+  
+  # download kubeadm_init_master script
+    $ wget https://raw.githubusercontent.com/nprauto11/npr_scripts/main/00_install_soft_scripts_etc/kubernetes_etc/kubeadm_init_master.sh -P /tmp/utilities
+    $ chmod 755 /tmp/utilities/kubeadm_init_master.sh
+	
   
  
 step-1: Manual steps
@@ -26,26 +35,21 @@ step-1: Manual steps
   Master:
   ------
   $ sudo su -
-  $ hostname master
-  $ echo "master" > /etc/hostname    
-  $ echo "127.0.1.1    master" >> /etc/hosts
-  
+  $ hsnm=master ; hostname $hsnm && echo $hsnm > /etc/hostname && echo "127.0.1.1    $hsnm" >> /etc/hosts
+    
   
   Worker-1:
   --------
   $ sudo su -
-  $ hostname worker-1
-  $ echo "worker-1" > /etc/hostname    
-  $ echo "127.0.1.1    worker-1" >> /etc/hosts
+  $ hsnm=worker1 ; hostname $hsnm && echo $hsnm > /etc/hostname && echo "127.0.1.1    $hsnm" >> /etc/hosts
 
 
   Worker-2:
   --------
   $ sudo su -
-  $ hostname worker-2
-  $ echo "worker-2" > /etc/hostname    
-  $ echo "127.0.1.1    worker-2" >> /etc/hosts
+  $ hsnm=worker2 ; hostname $hsnm && echo $hsnm > /etc/hostname && echo "127.0.1.1    $hsnm" >> /etc/hosts
   
+  # now re-login putty session for all nodes to reflect hostname 
   
 
 ## step 2:  Manual steps
@@ -53,37 +57,33 @@ step-1: Manual steps
 
   Master:  
   ------
-  # (1) execute kubeadm initialisation script on Master node. Follow step(a) or step (b) -->
-    # (a) verify file exists /tmp/utilities/kubeadm_init_master.sh 
+  # (1) execute kubeadm initialisation script on Master node -->
     $ sudo su -
-    $ ls -ltrh /tmp/utilities/kubeadm_init_master.sh 
     $ bash /tmp/utilities/kubeadm_init_master.sh 
+	
+	
+    # if init script file not present, download from below link:
+	# $ wget https://raw.githubusercontent.com/nprauto11/npr_scripts/main/00_install_soft_scripts_etc/kubernetes_etc/kubeadm_init_master.sh -P /tmp/utilities
+	# $ chmod 755 /tmp/utilities/kubeadm_init_master.sh 
+	# $ bash /tmp/utilities/kubeadm_init_master.sh
+	
   
-    # (b) if script didnt found, download like below & execute it 
-    $ mkdir -p /tmp/utilities
-    $ wget https://raw.githubusercontent.com/nprauto11/npr_scripts/main/00_install_soft_scripts_etc/kubernetes_etc/kubeadm_init_master.sh -P /tmp/utilities
-    $ chmod 755 /tmp/utilities/kubeadm_init_master.sh
-    $ bash /tmp/utilities/kubeadm_init_master.sh
-  
-  # (2) execute below command to get token (on master node) -->
-  $ kubeadm token create --print-join-command
-  
-  # copy the above command resultant on notepad and add --cri-socket atr the end and execute on worker nodes
-   (note: at the end add like:-  --cri-socket unix:///var/run/cri-dockerd.sock )
-  	
+  # (2) to join nodes to cluster, execute below command on master to get token -->
+    $ kubeadm token create --print-join-command | awk '{print $0" --cri-socket unix:///var/run/cri-dockerd.sock"}'
+    
 	
   worker-1:
   ---------
-  # Run the resultant token getting from master node by adding --cri-socket at the end.
-    Example -
-  $ kubeadm join 172.31.7.65:6443 --token 3p8bzg.sulks92b5xvrdwm4 --discovery-token-ca-cert-hash sha256:9de17e4f40a3d248ddaea0c67c73ae2bf0c0ee36e6f106592c83536e680b71f1 --cri-socket unix:///var/run/cri-dockerd.sock
+  # Run the resultant token getting from master. example: 
+  
+   $ kubeadm join 172.31.7.65:6443 --token 3p8bzg.sulks92b5xvrdwm4 --discovery-token-ca-cert-hash sha256:9de17e4f40a3d248ddaea0c67c73ae2bf0c0ee36e6f106592c83536e680b71f1 --cri-socket unix:///var/run/cri-dockerd.sock
 
 
   worker-2:
   ---------
-  # Run the resultant token getting from master node by adding --cri-socket at the end.
-    Example -
-  $ kubeadm join 172.31.7.65:6443 --token 3p8bzg.sulks92b5xvrdwm4 --discovery-token-ca-cert-hash sha256:9de17e4f40a3d248ddaea0c67c73ae2bf0c0ee36e6f106592c83536e680b71f1 --cri-socket unix:///var/run/cri-dockerd.sock
+  # Run the resultant token getting from master. example: 
+  
+   $ kubeadm join 172.31.7.65:6443 --token 3p8bzg.sulks92b5xvrdwm4 --discovery-token-ca-cert-hash sha256:9de17e4f40a3d248ddaea0c67c73ae2bf0c0ee36e6f106592c83536e680b71f1 --cri-socket unix:///var/run/cri-dockerd.sock
   
   
   
@@ -94,4 +94,13 @@ step-1: Manual steps
   $ kubectl get nodes -o wide 
   
   # now execute kubectl ad-hoc commands or manifests to create pods, replicas or deployments and services 
+  $ kubectl run nginx --image nginx 
+  $ kubectl get pods
+   
+  $ kubectl run redis --image=redis123 --dry-run=client -o yaml > redis.yaml 
+  $ kubectl create -f redis.yaml
+  $ kubectl get pods
+  
+  $ kubectl run httpd1 --image=httpd:alpine --port=80 --expose
+  $ kubectl run httpd2 --image=httpd:alpine --port=80 --expose --dry-run=client -o yaml > httpd.yaml
   
