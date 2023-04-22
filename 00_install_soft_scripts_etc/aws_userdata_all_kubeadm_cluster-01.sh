@@ -14,32 +14,35 @@
 
 #Software installations: nginx,ansible,terraform, docker, docker-compose,tomcat,jenkins
 mkdir -p /tmp/utilities
-wget https://raw.githubusercontent.com/nprauto11/npr_scripts/main/00_install_soft_scripts_etc/aws_userdata_common/aws_ubuntu22_install-all_01.sh /tmp/utilities
-bash /tmp/utilities/aws_ubuntu22_install-all_01.sh
+wget https://raw.githubusercontent.com/nprauto11/npr_scripts/main/00_install_soft_scripts_etc/aws_userdata_common/aws_ubuntu22_install-all_01.sh -P /tmp/utilities
+chmod 755 /tmp/utilities/aws_ubuntu22_install-all_01.sh
+/bin/bash /tmp/utilities/aws_ubuntu22_install-all_01.sh
 
 
 echo " " >> /tmp/utilities/status
-echo "########### kubernet cluster installation etc " >> /tmp/utilities/status
+echo "########### kubernet cluster installation etc ###########" >> /tmp/utilities/status
 echo "kubernetes basic tools installation started at $(date)" >> /tmp/utilities/status
 echo " " >> /tmp/utilities/status
 
 # kubeadm cluster (Bettter launch t2.medium/t3.medium of 3 nodes i.e 1-master, 2-nodes)
 #Software installation: Dokcker
-wget https://raw.githubusercontent.com/nprauto11/npr_scripts/main/00_install_soft_scripts_etc/kubernetes_etc/installDocker.sh /tmp/utilities
+wget https://raw.githubusercontent.com/nprauto11/npr_scripts/main/00_install_soft_scripts_etc/kubernetes_etc/installDocker.sh -P /tmp/utilities
 bash /tmp/utilities/installDocker.sh
 echo "$(date +%d-%m-%Y_%H:%M:%S) --> installed Docker" >> /tmp/utilities/status
 echo " " >> /tmp/utilities/status
 
 #Software installation: CRI-Dockerd
-wget https://raw.githubusercontent.com/nprauto11/npr_scripts/main/00_install_soft_scripts_etc/kubernetes_etc/installCRIDockerd.sh /tmp/utilities
-bash /tmp/utilities/installDocker.sh
+wget https://raw.githubusercontent.com/nprauto11/npr_scripts/main/00_install_soft_scripts_etc/kubernetes_etc/installCRIDockerd.sh -P /tmp/utilities
+chmod 755 /tmp/utilities/installDocker.sh
+/bin/bash /tmp/utilities/installDocker.sh
 echo "$(date +%d-%m-%Y_%H:%M:%S) --> installed CRI-Dockerd (adapter to control Docker via the Kubernetes Container Runtime Interface" >> /tmp/utilities/status
 echo " " >> /tmp/utilities/status
 
 
 #Software installations: kubeadm, kubelet, kubectl
-wget https://raw.githubusercontent.com/nprauto11/npr_scripts/main/00_install_soft_scripts_etc/kubernetes_etc/installK8S.sh /tmp/utilities
-bash /tmp/utilities/installK8S.sh
+wget https://raw.githubusercontent.com/nprauto11/npr_scripts/main/00_install_soft_scripts_etc/kubernetes_etc/installK8S.sh -P /tmp/utilities
+chmod 755 /tmp/utilities/installK8S.sh
+/bin/bash  /tmp/utilities/installK8S.sh
 echo "$(date +%d-%m-%Y_%H:%M:%S) --> installed K8s -- kubeadm, kubelet, kubectl" >> /tmp/utilities/status
 echo " " >> /tmp/utilities/status
 echo "kubernetes basic tools installation done on $(date)" >> /tmp/utilities/status
@@ -69,9 +72,10 @@ echo " " >> /tmp/utilities/status
 echo " " >> /tmp/utilities/status
 
 
-echo "########### execute manually on Master Node like below: " >> /tmp/utilities/status
+echo "########### execute manually on Master Node like below: ###########" >> /tmp/utilities/status
 echo " " >> /tmp/utilities/status
-wget https://raw.githubusercontent.com/nprauto11/npr_scripts/main/00_install_soft_scripts_etc/kubernetes_etc/kubeadm_init_master.sh /tmp/utilities
+wget https://raw.githubusercontent.com/nprauto11/npr_scripts/main/00_install_soft_scripts_etc/kubernetes_etc/kubeadm_init_master.sh -P /tmp/utilities
+chmod 755 /tmp/utilities/kubeadm_init_master.sh
 
 echo "$ sudo bash /tmp/utilities/kubeadm_init_master.sh " >> /tmp/utilities/status
 echo " " >> /tmp/utilities/status
@@ -92,5 +96,7 @@ echo "EXAMPLE:- run on nodes like below with adding dockerd sock on above comman
 echo "$ kubeadm join 172.31.7.65:6443 --cri-socket unix:///var/run/cri-dockerd.sock --token 3p8bzg.sulks92b5xvrdwm4 --discovery-token-ca-cert-hash sha256:9de17e4f40a3d248ddaea0c67c73ae2bf0c0ee36e6f106592c83536e680b71f1 " >> /tmp/utilities/status
 echo " " >> /tmp/utilities/status
 echo "enjoy with kubernetes cluster! " >> /tmp/utilities/status
+echo " " >> /tmp/utilities/status
+echo "########################################## " >> /tmp/utilities/status
 
 
