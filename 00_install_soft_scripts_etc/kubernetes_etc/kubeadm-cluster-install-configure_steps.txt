@@ -18,12 +18,6 @@ step-0: verify the pre-requisite software packages (if installed, execute from s
 # if above tools installed skip below steps and go to step-1 
   # kubeadm cluster tools installtion
   
-  $ sudo su -
-  $ mkdir -p /tmp/utilities
-  $ wget https://raw.githubusercontent.com/nprauto11/npr_scripts/main/00_install_soft_scripts_etc/kubernetes_etc/aws_ubuntu22_kubeadm_tools_install.sh -P /tmp/utilities
-  $ chmod 755 /tmp/utilities/aws_ubuntu22_kubeadm_tools_install.sh
-  $ bash /tmp/utilities/aws_ubuntu22_kubeadm_tools_install.sh
-  
  
 step-1: Manual steps
 ======
@@ -57,9 +51,20 @@ step-1: Manual steps
 ## step 2:  Manual steps
 ==========			
 
-  Master:
+  Master:  
   ------
+  # (1) verify file exists /tmp/utilities/aws_ubuntu22_kubeadm_tools_install.sh. if not download it
   $ sudo su -
+  $ ls -ltrh /tmp/utilities/aws_ubuntu22_kubeadm_tools_install.sh
+  $ bash /tmp/utilities/aws_ubuntu22_kubeadm_tools_install.sh
+  
+  # if script didnt found, download like below & execute it 
+  $ mkdir -p /tmp/utilities
+  $ wget https://raw.githubusercontent.com/nprauto11/npr_scripts/main/00_install_soft_scripts_etc/kubernetes_etc/aws_ubuntu22_kubeadm_tools_install.sh -P /tmp/utilities
+  $ chmod 755 /tmp/utilities/aws_ubuntu22_kubeadm_tools_install.sh
+  $ bash /tmp/utilities/aws_ubuntu22_kubeadm_tools_install.sh
+  
+  # (2) execute remaining commands
   $ kubeadm token create --print-join-command
   
   # copy the above command resultant kubeadm join token from master & execute on worker nodes

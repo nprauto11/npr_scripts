@@ -31,6 +31,7 @@ echo "$(date +%d-%m-%Y_%H:%M:%S) --> installed K8s -- kubeadm, kubelet, kubectl"
 echo " " >> /tmp/utilities/status
 echo "## kubernetes basic tools installation done on $(date) ##" >> /tmp/utilities/status
 
+# validation
 echo " " >> /tmp/utilities/status
 echo " " >> /tmp/utilities/status
 
@@ -57,3 +58,27 @@ echo " " >> /tmp/utilities/status
 
 echo "=============================" >> /tmp/utilities/status
 echo " " >> /tmp/utilities/status
+echo " " >> /tmp/utilities/status
+
+# download 
+wget https://raw.githubusercontent.com/nprauto11/npr_scripts/main/00_install_soft_scripts_etc/kubernetes_etc/aws_ubuntu22_kubeadm_tools_install.sh -P /tmp/utilities
+chmod 755 /tmp/utilities/aws_ubuntu22_kubeadm_tools_install.sh
+# bash /tmp/utilities/aws_ubuntu22_kubeadm_tools_install.sh
+
+# For further steps browse: Link:- https://raw.githubusercontent.com/nprauto11/npr_scripts/main/00_install_soft_scripts_etc/kubernetes_etc/kubeadm-cluster-install-configure_steps.txt 
+# steps
+wget https://raw.githubusercontent.com/nprauto11/npr_scripts/main/00_install_soft_scripts_etc/kubernetes_etc/kubeadm-cluster-install-configure_steps.txt -P /tmp/utilities
+chmod 644 /tmp/utilities/kubeadm-cluster-install-configure_steps.txt
+
+
+echo "For kubeadm cluster configuration, go through step-A (or) step-B:- " >> /tmp/utilities/status
+echo " " >> /tmp/utilities/status
+echo "Step-A --> browse the below link & execute from Step-1: " >> /tmp/utilities/status
+echo "Link:- https://raw.githubusercontent.com/nprauto11/npr_scripts/main/00_install_soft_scripts_etc/kubernetes_etc/kubeadm-cluster-install-configure_steps.txt " >> /tmp/utilities/status
+
+
+echo " " >> /tmp/utilities/status
+echo "Step-B --> read the steps file & & execute from Step-1: " >> /tmp/utilities/status
+echo " cat /tmp/utilities/kubeadm-cluster-install-configure_steps.txt" >> /tmp/utilities/status
+echo " " >> /tmp/utilities/status
+echo "########################################## " >> /tmp/utilities/status
