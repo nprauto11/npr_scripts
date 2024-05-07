@@ -58,10 +58,9 @@ echo " " >> /tmp/utilities/status
 echo "$ kubelet --version " >> /tmp/utilities/status
 kubelet --version >> /tmp/utilities/status 2>&1
 echo " " >> /tmp/utilities/status
-   
-echo "$ kubectl version --short --client" >> /tmp/utilities/status
-# kubectl version --short --client >> /tmp/utilities/status 2>&1
-kubectl version --short >> /tmp/utilities/status 2>&1
+  
+echo "$ kubectl version --client" >> /tmp/utilities/status
+kubectl version --client >> /tmp/utilities/status 2>&1
 echo " " >> /tmp/utilities/status   
 echo " " >> /tmp/utilities/status
 
