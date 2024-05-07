@@ -60,7 +60,8 @@ kubelet --version >> /tmp/utilities/status 2>&1
 echo " " >> /tmp/utilities/status
    
 echo "$ kubectl version --short --client" >> /tmp/utilities/status
-kubectl version --short --client >> /tmp/utilities/status 2>&1
+# kubectl version --short --client >> /tmp/utilities/status 2>&1
+kubectl version --short >> /tmp/utilities/status 2>&1
 echo " " >> /tmp/utilities/status   
 echo " " >> /tmp/utilities/status
 
